@@ -1,84 +1,187 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+server/app/__pycache__/
+server/app/*.py[cod]
+server/app/*$py.class
 
 # C extensions
 *.so
 
 # Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+server/app/.Python
+server/app/build/
+server/app/develop-eggs/
+server/app/dist/
+server/app/downloads/
+server/app/eggs/
+server/app/.eggs/
+server/app/lib/
+server/app/lib64/
+server/app/parts/
+server/app/sdist/
+server/app/var/
+server/app/wheels/
+server/app/share/python-wheels/
+server/app/*.egg-info/
+server/app/.installed.cfg
+server/app/*.egg
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+server/app/*.manifest
+server/app/*.spec
 
 # Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+server/app/pip-log.txt
+server/app/pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
+server/app/htmlcov/
+server/app/.tox/
+server/app/.nox/
+server/app/.coverage
+server/app/.coverage.*
+server/app/.cache
+server/app/nosetests.xml
+server/app/coverage.xml
+server/app/*.cover
+server/app/*.py,cover
+server/app/.hypothesis/
+server/app/.pytest_cache/
+server/app/cover/
 
 # Jupyter Notebook
-.ipynb_checkpoints
+server/app/.ipynb_checkpoints
 
 # pyenv
-.python-version
+server/app/.python-version
 
 # celery beat schedule file
-celerybeat-schedule.*
+server/app/celerybeat-schedule.*
 
 # dotenv
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+server/app/.env
+server/app/.venv
+server/app/env/
+server/app/venv/
+server/app/ENV/
+server/app/env.bak/
+server/app/venv.bak/
 
 # Spyder project settings
-.spyderproject
-.spyproject
+server/app/.spyderproject
+server/app/.spyproject
 
 # Rope project settings
-.ropeproject
+server/app/.ropeproject
 
 # mkdocs documentation
-/site
+server/app/site
 
 # mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
+server/app/.mypy_cache/
+server/app/.dmypy.json
+server/app/dmypy.json
+
+
+# Flutter/Dart/Pub related
+app/**/doc/api/
+
+# Files and directories created by pub
+app/.dart_tool/
+app/.packages
+app/.pub/
+app/build/
+
+
+# Directory created by dartdoc
+app/doc/api/
+
+# Avoid committing generated Javascript files:
+app/*.dart.js
+app/*.info.json
+app/*.js
+app/*.js_
+app/*.js.deps
+app/*.js.map
+
+# Avoid committing compiled Flutter/Dart/Pub binaries:
+app/app/*.exe
+app/app/*.iws
+app/app/*.jar
+app/app/*.class
+
+# Android related
+app/**/android/**/gradle-wrapper.jar
+app/**/android/.gradle
+app/**/android/captures/
+app/**/android/**/gradlew
+app/**/android/**/gradlew.bat
+app/**/android/**/local.properties
+app/**/android/**/generated/
+
+# iOS related
+app/**/ios/Flutter/.last_build_id
+app/**/ios/Pods/
+app/**/ios/Runner.xcworkspace/
+app/**/ios/Flutter/Flutter.framework/
+app/**/ios/Flutter/App.framework/
+app/**/ios/Flutter/Flutter.podspec
+app/**/ios/.symlinks/
+app/**/ios/**/Podfile.lock
+app/**/ios/**/Podfile
+
+# Xcode
+app/**/ios/xcuserdata/
+app/**/ios/**/*.xcuserstate
+app/**/ios/**/DerivedData/
+app/**/ios/**/xcdebugger/
+app/**/ios/**/xcuserdata/
+
+# iOS Personal
+app/**/ios/**/Generated/
+app/**/ios/**/Flutter/
+app/**/ios/**/Flutter.podspec
+
+# Linux
+app/**/linux/.cproject
+app/**/linux/.project
+app/**/linux/.settings
+app/**/linux/Makefile
+app/**/linux/obj/
+app/**/linux/Output/
+
+# MacOS
+app/**/macos/Flutter/Flutter.framework/
+app/**/macos/Flutter/App.framework/
+app/**/macos/Flutter/Flutter.podspec
+app/**/macos/.flutter-plugins-dependencies
+app/**/macos/.flutter-plugins
+app/**/macos/.symlinks/
+app/**/macos/Flutter/ephemeral/
+app/**/macos/Flutter/FlutterPluginRegistrant/
+
+# Web
+app/**/web/generated_plugin_registrant.dart
+app/**/web/compiled/
+app/**/web/flutter_assets/
+app/**/web/main.dart.js.deps
+app/**/web/main.dart.js.map
+app/**/web/main.dart.js
+
+# Windows
+app/**/windows/.cproject
+app/**/windows/.project
+app/**/windows/.settings
+app/**/windows/Makefile
+app/**/windows/obj/
+app/**/windows/Output/
+app/**/windows/flutter/FlutterPluginRegistrant/
+app/**/windows/.flutter-plugins
+app/**/windows/flutter/Flutter.podspec
+app/**/windows/.flutter-plugins-dependencies
+app/**/windows/Flutter/ephemeral/
+app/**/windows/Flutter/flutter_assets/
+
+# Firebase keys
+app/**/firebase_config.json
