@@ -12,7 +12,7 @@ COPY server/app app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Exponer el puerto en el que la aplicación Flask estará corriendo
-EXPOSE 5000
+EXPOSE 8000
 
 # Comando para ejecutar la aplicación
-CMD ["python", "app/app.py"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

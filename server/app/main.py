@@ -1,6 +1,10 @@
-from app import create_app
+from fastapi import FastAPI
+from app.api.video_routes import router as video_router
 
-app = create_app()
+app = FastAPI()
+
+app.include_router(video_router, prefix="/videos")
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
