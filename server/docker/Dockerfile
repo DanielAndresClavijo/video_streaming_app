@@ -7,11 +7,12 @@ WORKDIR /app
 # Copiar el archivo de requerimientos y la aplicación al contenedor
 COPY server/requirements.txt requirements.txt
 COPY server/app app
+COPY server/.env .env
 
 # Instalar las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Exponer el puerto en el que la aplicación Flask estará corriendo
+# Exponer el puerto en el que la aplicación estará corriendo
 EXPOSE 8000
 
 # Comando para ejecutar la aplicación
