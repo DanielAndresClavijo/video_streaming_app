@@ -2,7 +2,8 @@ from pydantic import BaseModel
 from typing import Optional
 
 class Video(BaseModel):
-    id: Optional[int]
+    id: int
+    user_id: int
     title: str
     description: str
     url: str
