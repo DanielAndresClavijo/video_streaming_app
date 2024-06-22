@@ -7,8 +7,7 @@ supabase: Client = init_supabase()
 
 class SupabaseVideoStorage(VideoStorageInterface):
     def upload_video(self, video: Video) -> Video:
-        # Asumiendo que tienes una tabla llamada 'videos' en tu base de datos Supabase
-        response = supabase.table('videos').insert(video.dict()).execute()
+        response = supabase.table('videos').insert(video.model_dump()).execute()
         if response.error:
             raise Exception(response.error.message)
         return Video(**response.data[0])
