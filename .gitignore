@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-server/app/__pycache__/
+server/app/**/__pycache__/
 server/app/*.py[cod]
 server/app/*$py.class
 
@@ -60,7 +60,7 @@ server/app/.python-version
 server/app/celerybeat-schedule.*
 
 # dotenv
-server/app/.env
+server/.env
 server/app/.venv
 server/app/env/
 server/app/venv/
