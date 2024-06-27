@@ -61,6 +61,7 @@ server/app/celerybeat-schedule.*
 
 # dotenv
 server/.env
+server/app/jwt_authorization.json
 server/app/.venv
 server/app/env/
 server/app/venv/

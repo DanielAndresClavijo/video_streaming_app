@@ -3,12 +3,22 @@ from typing import List
 from app.domain.models.video import Video
 
 class VideoStorageInterface(ABC):
-
+   
     @abstractmethod
-    def upload_video(self, video: Video) -> Video:
+    def upload_video(self, video: Video, user_id: int) -> Video:
         """
-        Sube un video a la plataforma de almacenamiento.
+        Crea o actualiza la info de un video a la plataforma de almacenamiento.
         :param video: Objeto de vídeo que contiene detalles del vídeo..
+        :return: Objeto de vídeo con detalles de vídeo almacenados.
+        """
+        pass
+    
+    @abstractmethod
+    def get_video_by_id(self, video_id: int, user_id: int) -> Video | None:
+        """
+        Obtiene los datos de un video dependiendo de su id y el id de usuario.
+        :param video_id: Id del video que se solicita.
+        :param user_id: El id de usuario relacionado al video.
         :return: Objeto de vídeo con detalles de vídeo almacenados.
         """
         pass

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Any, Optional
 
 class Video(BaseModel):
     id: Optional[int]
@@ -11,5 +11,13 @@ class Video(BaseModel):
     updated_at: Optional[str] = ''
 
 
-    def model_dump(self):
-        return self.dict()
+    def model_dump(self) ->  dict[str, Any]:
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'title': self.title,
+            'description': self.description,
+            'url': self.url,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at,
+        }
