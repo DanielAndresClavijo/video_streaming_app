@@ -1,18 +1,18 @@
 from abc import ABC, abstractmethod
 from typing import List
-from app.domain.models.video import Video
+from app.domain.models.video import Video, UpdateVideoRequest
 
 class VideoStorageInterface(ABC):
-   
+
     @abstractmethod
-    def upload_video(self, video: Video, user_id: int) -> Video:
+    def get_videos(self, user_id: int) -> List[Video]:
         """
-        Crea o actualiza la info de un video a la plataforma de almacenamiento.
-        :param video: Objeto de vídeo que contiene detalles del vídeo..
-        :return: Objeto de vídeo con detalles de vídeo almacenados.
+        Obtiene una lista de videos para un usuario específico.
+        :param user_id: ID del usuario.
+        :return: Lista de objetos Video.
         """
         pass
-    
+
     @abstractmethod
     def get_video_by_id(self, video_id: int, user_id: int) -> Video | None:
         """
@@ -24,11 +24,20 @@ class VideoStorageInterface(ABC):
         pass
 
     @abstractmethod
-    def get_videos(self, user_id: int) -> List[Video]:
+    def create_video(self, video: Video) -> Video:
         """
-        Obtiene una lista de videos para un usuario específico.
-        :param user_id: ID del usuario.
-        :return: Lista de objetos Video.
+        Crea los datos de un video.
+        :param video: Objeto que contiene la info del video a crear.
+        :return: Objeto de vídeo con detalles de vídeo almacenados.
+        """
+        pass
+
+    @abstractmethod
+    def update_video(self, video: UpdateVideoRequest, user_id: int, video_id: int) -> Video:
+        """
+        Actualiza la info de un video a la plataforma de almacenamiento.
+        :param video: Objeto de vídeo que contiene detalles del vídeo.
+        :return: Objeto de vídeo con detalles de vídeo almacenados.
         """
         pass
 

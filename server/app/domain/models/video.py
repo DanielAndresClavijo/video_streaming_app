@@ -21,3 +21,18 @@ class Video(BaseModel):
             'created_at': self.created_at,
             'updated_at': self.updated_at,
         }
+
+class UpdateVideoRequest(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    url: Optional[str] = None
+    updated_at: Optional[str] = None
+
+
+    def model_dump(self) ->  dict[str, Any]:
+        return {
+            'title': self.title,
+            'description': self.description,
+            'url': self.url,
+            'updated_at': self.updated_at,
+        }

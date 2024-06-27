@@ -10,14 +10,14 @@ from typing import List
 from app.core.config import Config
 from app.domain.services.video_service import VideoService
 from app.domain.services.auth_service import AuthService
-from app.domain.models.video import Video
+from app.domain.models.video import Video, UpdateVideoRequest
 from app.domain.models.user import User
 
 router = APIRouter()
 video_service = VideoService()
 auth_service = AuthService()
 
-def get_current_user(Authorization: str) -> User:
+def get_and_verify_user(Authorization: str) -> User:
     if Authorization is None:
         print("User id not found")
         raise HTTPException(status_code=401, detail="Invalid JWT token")
@@ -46,7 +46,7 @@ def get_current_user(Authorization: str) -> User:
 def get_videos(auth: Annotated[str, Header(...)]):
     try:
         print("Getting user...")
-        current_user = get_current_user(auth)
+        current_user = get_and_verify_user(auth)
         print(f"user result: {current_user.id}")
         videoResponse = video_service.get_videos(user_id=current_user.id)
         print(f"Video list: {len(videoResponse)}")
@@ -57,21 +57,31 @@ def get_videos(auth: Annotated[str, Header(...)]):
 
 @router.get("/{video_id}", response_model=Video)
 def get_video_by_id(auth: Annotated[str, Header(...)], video_id: int):
-    current_user = get_current_user(auth)
+    current_user = get_and_verify_user(auth)
     video = video_service.get_video_by_id(video_id, current_user.id)
     if not video:
         raise HTTPException(status_code=404, detail="Video not found")
     return video
 
 @router.post("/", response_model=Video)
-def update_video(auth: Annotated[str, Header(...)], video: Video):
-    current_user = get_current_user(auth)
+def create_video(auth: Annotated[str, Header(...)], video: Video):
+    current_user = get_and_verify_user(auth)
     video.user_id = current_user.id
-    return video_service.update_video(video)
+    created_video = video_service.create_video(video)
+    return created_video
+
+@router.put("/{video_id}", response_model=Video)
+def update_video(auth: Annotated[str, Header(...)],video_id: int, video: UpdateVideoRequest):
+    current_user = get_and_verify_user(auth)
+    updated_video = video_service.update_video(video, current_user.id, video_id)
+    if not updated_video:
+        raise HTTPException(status_code=404, detail="Video not found")
+    return updated_video
+
 
 @router.delete("/{video_id}", response_model=Video)
 def delete_video(auth: Annotated[str, Header(...)], video_id: int):
-    current_user = get_current_user(auth)
+    current_user = get_and_verify_user(auth)
     deleted_video = video_service.delete_video(video_id, current_user.id)
     if not deleted_video:
         raise HTTPException(status_code=404, detail="Video not found")
@@ -85,42 +95,43 @@ def delete_video(auth: Annotated[str, Header(...)], video_id: int):
 @router.post("/upload/{video_id}", response_model=Video)
 async def upload_video_file(auth: Annotated[str, Header(...)], video_id: int, file: UploadFile = File(...)):
     try:
-        user_id = get_current_user(auth)
+        user = get_and_verify_user(auth)
         # Guardar el archivo de video en el servidor
-        file_location = os.path.join(Config.VIDEO_DIRECTORY, f'video_{video_id}.mp4')
+        file_name = f'video_{video_id}.mp4'
+        file_location = os.path.join(f"{os.getcwd()}{Config.VIDEO_DIRECTORY}", file_name)
         with open(file_location, "wb+") as file_object:
             shutil.copyfileobj(file.file, file_object)
-        
-        
-        video = video_service.get_video_by_id(video_id, user_id)
+
+        video = video_service.get_video_by_id(video_id, user.id)
         
         if not video:
             raise HTTPException(status_code=404, detail="Video not found")
         
         # Actualizar la información del video en la base de datos
-        video.url = file_location
-        updated_video = video_service.update_video(video)
+        video.url = file_name
+        updated_video = video_service.update_video(UpdateVideoRequest(**video.model_dump()), user.id, video.id)
 
         return updated_video
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/stream/{video_id}")
-def stream_video(request: Request, auth: Annotated[str, Header(...)], video_id: int):
-    current_user = get_current_user(auth)
+def stream_video(auth: Annotated[str, Header(...)], video_id: int, range: Annotated[str | None, Header()]= None):
+    current_user = get_and_verify_user(auth)
     video = video_service.get_video_by_id(video_id, current_user.id)
     if not video:
         raise HTTPException(status_code=404, detail="Video not found")
-    
-    video_path = video.url
-    file_size = os.path.getsize(video_path)
-    range_header = request.headers.get('Range', None)
+    file_name=video.url
+    video_path = f"{os.getcwd()}{Config.VIDEO_DIRECTORY}"
+    print(f"PATH: {video_path}")
+    file_size = os.path.getsize(f'{video_path}{file_name}')
+    range_header = range
     if range_header:
         start, end = range_header.replace("bytes=", "").split("-")
         start = int(start)
         end = int(end) if end else file_size - 1
         length = end - start + 1
-        with open(video_path, "rb") as video_file:
+        with open(f'{video_path}{file_name}', "rb") as video_file:
             video_file.seek(start)
             data = video_file.read(length)
         content_range = f"bytes {start}-{end}/{file_size}"
@@ -131,20 +142,33 @@ def stream_video(request: Request, auth: Annotated[str, Header(...)], video_id: 
             'Content-Type': 'video/mp4',
         }
         return Response(data, status_code=206, headers=headers)
-    return FileResponse(video_path, media_type="video/mp4")
+    return FileResponse(path=video_path, filename=file_name, media_type="video/mp4")
 
 @router.get("/snapshot/{video_id}")
 def get_video_snapshot(auth: Annotated[str, Header(...)], video_id: int):
-    current_user = get_current_user(auth)
+    current_user = get_and_verify_user(auth)
     video = video_service.get_video_by_id(video_id, current_user.id)
     if not video:
         raise HTTPException(status_code=404, detail="Video not found")
 
-    snapshot_path = f"{video.url}.png"
-    if not os.path.exists(snapshot_path):
+    file_name = f"{video.url}.png"
+    snapshot_path = f"{os.getcwd()}{Config.VIDEO_DIRECTORY}"
+    print(f"snapshot_path: {snapshot_path}")
+    if os.path.exists(snapshot_path):
+        print("Si existe la ruta")
         # Crear snapshot usando ffmpeg
-        subprocess.call(['ffmpeg', '-i', video.url, '-ss', '00:00:01.000', '-vframes', '1', snapshot_path])
+        subprocess.call([
+            'ffmpeg', '-i',
+            f'{snapshot_path}{video.url}',
+            '-ss',
+            '00:00:01.000',
+            '-vframes',
+            '1',
+            f'{file_name}',
+        ])
+    else:
+        raise HTTPException(status_code=404, detail="Not found.")
 
-    return FileResponse(snapshot_path, media_type="image/png")
+    return FileResponse(path=f'{snapshot_path}{file_name}', filename=file_name, media_type="image/png")
 
 
