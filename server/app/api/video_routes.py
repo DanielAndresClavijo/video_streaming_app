@@ -4,7 +4,7 @@ import shutil
 import subprocess
 
 from typing import Annotated
-from fastapi import APIRouter, HTTPException, Header, UploadFile, Response, Request, File
+from fastapi import APIRouter, HTTPException, UploadFile, Response, Header, Body, File, Path
 from fastapi.responses import FileResponse
 from typing import List
 from app.core.config import Config
@@ -56,7 +56,7 @@ def get_videos(auth: Annotated[str, Header(...)]):
         raise HTTPException(status_code=404, detail=err.__dict__)
 
 @router.get("/{video_id}", response_model=Video)
-def get_video_by_id(auth: Annotated[str, Header(...)], video_id: int):
+def get_video_by_id(auth: Annotated[str, Header(...)], video_id: Annotated[int, Path(...)]):
     current_user = get_and_verify_user(auth)
     video = video_service.get_video_by_id(video_id, current_user.id)
     if not video:
@@ -64,14 +64,18 @@ def get_video_by_id(auth: Annotated[str, Header(...)], video_id: int):
     return video
 
 @router.post("/", response_model=Video)
-def create_video(auth: Annotated[str, Header(...)], video: Video):
+def create_video(auth: Annotated[str, Header(...)], video: Annotated[Video, Body(...)]):
     current_user = get_and_verify_user(auth)
     video.user_id = current_user.id
     created_video = video_service.create_video(video)
     return created_video
 
 @router.put("/{video_id}", response_model=Video)
-def update_video(auth: Annotated[str, Header(...)],video_id: int, video: UpdateVideoRequest):
+def update_video(
+    auth: Annotated[str, Header(...)],
+    video_id: Annotated[int, Path(...)],
+    video: Annotated[UpdateVideoRequest, Body(...)],
+):
     current_user = get_and_verify_user(auth)
     updated_video = video_service.update_video(video, current_user.id, video_id)
     if not updated_video:
@@ -80,7 +84,7 @@ def update_video(auth: Annotated[str, Header(...)],video_id: int, video: UpdateV
 
 
 @router.delete("/{video_id}", response_model=Video)
-def delete_video(auth: Annotated[str, Header(...)], video_id: int):
+def delete_video(auth: Annotated[str, Header(...)], video_id: Annotated[int, Path(...)]):
     current_user = get_and_verify_user(auth)
     deleted_video = video_service.delete_video(video_id, current_user.id)
     if not deleted_video:
@@ -93,7 +97,11 @@ def delete_video(auth: Annotated[str, Header(...)], video_id: int):
     return deleted_video
 
 @router.post("/upload/{video_id}", response_model=Video)
-async def upload_video_file(auth: Annotated[str, Header(...)], video_id: int, file: UploadFile = File(...)):
+async def upload_video_file(
+    auth: Annotated[str, Header(...)],
+    video_id: Annotated[int, Path(...)],
+    file: Annotated[UploadFile, File(...)],
+):
     try:
         user = get_and_verify_user(auth)
         # Guardar el archivo de video en el servidor
@@ -116,7 +124,11 @@ async def upload_video_file(auth: Annotated[str, Header(...)], video_id: int, fi
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/stream/{video_id}")
-def stream_video(auth: Annotated[str, Header(...)], video_id: int, range: Annotated[str | None, Header()]= None):
+def stream_video(
+    auth: Annotated[str, Header(...)],
+    video_id: Annotated[int, Path(...)],
+    range: Annotated[str | None, Header(...)]= None,
+):
     current_user = get_and_verify_user(auth)
     video = video_service.get_video_by_id(video_id, current_user.id)
     if not video:
@@ -145,7 +157,7 @@ def stream_video(auth: Annotated[str, Header(...)], video_id: int, range: Annota
     return FileResponse(path=video_path, filename=file_name, media_type="video/mp4")
 
 @router.get("/snapshot/{video_id}")
-def get_video_snapshot(auth: Annotated[str, Header(...)], video_id: int):
+def get_video_snapshot(auth: Annotated[str, Header(...)], video_id: Annotated[int, Path(...)]):
     current_user = get_and_verify_user(auth)
     video = video_service.get_video_by_id(video_id, current_user.id)
     if not video:
