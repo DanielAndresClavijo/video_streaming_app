@@ -78,10 +78,16 @@ cd video_streaming_app
    - `JWT_SECRET`: Clave secreta utilizada para la generación y validación de tokens JWT.
 
    Puedes crear un archivo `.env` en la carpeta del servidor con estas variables para facilitar la configuración.
-
 ### 3. Configuración del entorno para el cliente
-
 Asegúrate de tener instalado el Flutter SDK (versión 3.22.0) y configura tu entorno siguiendo la [documentación oficial de Flutter](https://flutter.dev/docs/get-started/install).
+
+> Nota:
+> Por el momento no se ha implementado ninguna lógica especial en el lado nativo. Si las carpetas de las plataformas (Android, iOS, Windows, Web y Linux) no se encuentran en el proyecto, deberás generarlas ejecutando:
+> 
+> ```bash
+> flutter create .
+> ```
+> Esto asegurará que la aplicación cuente con la configuración nativa necesaria para compilar y ejecutar el cliente en cada plataforma.
 
 ### 4. Ejecución de la aplicación
 
