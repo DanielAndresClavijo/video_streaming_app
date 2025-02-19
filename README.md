@@ -1,5 +1,11 @@
 # Video Streaming App
 
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+![Estado: En Progreso](https://img.shields.io/badge/estado-En%20progreso-yellow.svg)
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Último Commit](https://img.shields.io/github/last-commit/DanielAndresClavijo/video_streaming_app.svg)
+
+
 Una aplicación de transmisión de video en vivo, compuesta por una aplicación cliente multiplataforma desarrollada con Flutter y un servidor backend construido con Python FastApi.
 
 ## Descripción
