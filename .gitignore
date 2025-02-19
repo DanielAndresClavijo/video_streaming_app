@@ -3,6 +3,8 @@ server/app/**/__pycache__/
 server/app/*.py[cod]
 server/app/*$py.class
 
+.qodo
+
 # C extensions
 *.so
 
